@@ -6,28 +6,25 @@ using UnityEngine;
 
 public class VolumeValue : MonoBehaviour
 {
-    private AudioSource _audioSource;
-    private float _maxVolume = 1;
-    private float _musicVolume = 0.1f;
-    private float _minVolume = 0.1f;
+    [SerializeField] AudioSource _audioSource;
+    [SerializeField] private float speed;
 
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-        StartCoroutine(VolumeChange()); ;
+        StartCoroutine(FadeIn()); ;
     }
 
-    private IEnumerator VolumeChange()
+    private IEnumerator FadeIn()
     {
-        _audioSource.volume = _musicVolume;
-        while (true)
-        {
-            if (_musicVolume < _maxVolume)
-            {
-                _musicVolume = Mathf.MoveTowards(_minVolume, _maxVolume, _musicVolume * Time.deltaTime);
-            }
+        var volume = _audioSource.volume;
+        var waitForOneSeconds = new WaitForSeconds(1f);
 
-            yield return null;
+        for (int i = 0; i < 10; i++)
+        {
+            volume = 1f - (1f / 10f * i);
+            _audioSource.volume = Mathf.MoveTowards(volume, i, speed);
+            yield return waitForOneSeconds;
         }
     }
 
