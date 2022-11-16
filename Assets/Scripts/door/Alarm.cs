@@ -4,6 +4,8 @@ using UnityEngine;
 public class Alarm : MonoBehaviour
 {
     [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private _maximumValue;
+    [SerializeField] private _minimumValue;
 
     private Coroutine _activeCoroutine;
     private float _recoveryRate = 0.5f;
@@ -11,14 +13,12 @@ public class Alarm : MonoBehaviour
 
     public void PlaySound()
     {
-        _requiredValue = 1f;
         _audioSource.Play();
         _activeCoroutine = StartCoroutine(ChangeVolume());
     }
 
     public void StopSound()
     {
-        _requiredValue = 0f;
         StopCoroutine(_activeCoroutine);
         _activeCoroutine = StartCoroutine(ChangeVolume());
     }
@@ -30,9 +30,9 @@ public class Alarm : MonoBehaviour
 
     private IEnumerator ChangeVolume()
     {
-        while (_audioSource.volume != _requiredValue)
+        while (_audioSource.volume != _maximumValue)
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _requiredValue, _recoveryRate * Time.deltaTime);
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _minimumValue, _recoveryRate * Time.deltaTime);
             yield return null;
         }
     }
