@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class Mover : MonoBehaviour
 {
-
     [SerializeField] private float _speed;
 
-    void Update()
+    public void Update()
     {
         if (Input.GetKey(KeyCode.D))
         {
