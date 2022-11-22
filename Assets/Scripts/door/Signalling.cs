@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 
-public class SettingVolume : MonoBehaviour
+public class Signalling : MonoBehaviour
 {
     [SerializeField] private AudioSource _audioSource;
 
