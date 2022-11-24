@@ -3,42 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-
 public class Signalling : MonoBehaviour
 {
-    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private float _speedChangeVolume;
 
-    public void TurnOn()
+    private AudioSource _audioSource;
+    private float _minimalVolume = 0;
+    private float _maximalVolume = 1;
+    private Coroutine _coroutine;
+
+    private void Start()
     {
-        int targetVolume = 1;
-
-        StartCoroutine(ChangeVolumeSmoothly(targetVolume));
+        _audioSource = GetComponent<AudioSource>();
     }
 
-    public void TurnOff()
+    public void Change(bool isUpVolume = true)
     {
-        int targetVolume = 0;
-
-        StartCoroutine(ChangeVolumeSmoothly(targetVolume));
-    }
-
-    private IEnumerator ChangeVolumeSmoothly(int targetVolume)
-    {
-
-        if (_audioSource.isPlaying == false)
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+        }
+        if (isUpVolume)
         {
             _audioSource.Play();
+            _coroutine = StartCoroutine(MoveValue(_maximalVolume));
         }
-
-        while (_audioSource.volume < targetVolume || _audioSource.volume > targetVolume)
+        else
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, Time.deltaTime);
+            _coroutine = StartCoroutine(MoveValue(_minimalVolume));
+        }
+    }
+
+    private IEnumerator MoveValue(float targetVolume)
+    {
+        while (_audioSource.volume != targetVolume)
+        {
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, _speedChangeVolume * Time.deltaTime);
             yield return null;
         }
 
-        if (_audioSource.volume <= 0 && _audioSource.isPlaying == true)
-        {
+        if (_audioSource.volume == _minimalVolume)
             _audioSource.Stop();
-        }
     }
 }

@@ -5,17 +5,22 @@ using UnityEngine.Events;
 
 public class DoorTrigger : MonoBehaviour
 {
-    [SerializeField] private UnityEvent _activated;
+    [SerializeField] private UnityEvent _activatedAlarm;
+    [SerializeField] private UnityEvent _deactivatedAlarm;
 
-    private void OnTriggerEnter(Collider collider)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        int numberOfEvent = 0;
-        _activated[numberOfEvent].Invoke();
+        if (collision.TryGetComponent<Player>(out Player player))
+        {
+            _activatedAlarm?.Invoke();
+        }
     }
 
-    private void OnTriggerExit(Collider collider)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        int numberOfEvent = 1;
-        _activated[numberOfEvent].Invoke();
+        if (collision.TryGetComponent<Player>(out Player player))
+        {
+            _deactivatedAlarm?.Invoke();
+        }
     }
 }
